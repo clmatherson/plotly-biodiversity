@@ -6,7 +6,7 @@ function optionChanged(id) {
 };
 
 function buildBarChart(id) {
-    d3.json("../samples.json").then((sample) => {
+    d3.json("samples.json").then((sample) => {
         var sel_sampleData = sample.samples;
         var result = sel_sampleData.filter((smdata) => smdata.id.toString() === id)[0];
 
@@ -41,41 +41,41 @@ function buildBarChart(id) {
 
 
 function buildBubbleChart(id) {
-    d3.json("../samples.json").then((sample) => {
+    d3.json("samples.json").then((sample) => {
         var sel_sampleData = sample.samples
         var result = sel_sampleData.filter((smdata) => smdata.id.toString() === id)[0];
 
-        var sampleValues =  result.sample_values.slice(0, 10).reverse();
+        var sampleValues =  result.sample_values;
 
-        var otu = (result.otu_ids.slice(0, 10)).reverse();
+        var otu = result.otu_ids;
         var otu_id = otu.map((id) => `OTU  ${id}`);
         var otu_ids = otu.map((id) => id);
-
-        var labels =  result.otu_labels.slice(0, 10).reverse();
-
+       
         var trace = {
-            x: otu_id,
+            x: otu_ids,
             y: sampleValues,
             mode: "markers",
             marker: {
                 size: sampleValues,
-                color: otu_ids
+                color: otu_ids,
+                colorscale: "Earth",
+                type: "heatmap"
             },
-            text: labels
+            text: otu_id
         };
         var data = [trace];
 
         var layout = {
             xaxis: {title: `OTU ${id}`},
-            height: 600,
-            width: 1000,
-            };
+            margin: { t: 0},
+            hovermode: "closest"
+        };
         Plotly.newPlot("bubble", data, layout);
     });
 };
 
 function buildMetaData(id) {
-    d3.json("../samples.json").then((sample) => {
+    d3.json("samples.json").then((sample) => {
         var sel_metaData = sample.metadata;
 
         var result = sel_metaData.filter((smdata) => smdata.id.toString() === id)[0];
@@ -84,7 +84,7 @@ function buildMetaData(id) {
         sel_metaData_id.html("");
 
         Object.entries(result).forEach((item) => {
-            sel_metaData_id.append("h5").text(item[0].toUpperCase() + ":" + item[1] + "\n");
+            sel_metaData_id.append("h5").text(item[0].toUpperCase() + ": " + item[1] + "\n");
         });    
     });
 };
@@ -92,7 +92,7 @@ function buildMetaData(id) {
 function init() {
     var dropdown = d3.select("#selDataset");
     
-    d3.json("../samples.json").then((selectedData) => {
+    d3.json("samples.json").then((selectedData) => {
         
         selectedData.names.forEach(function(name) {
             dropdown.append("option").text(name).property("value");

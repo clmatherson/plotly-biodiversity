@@ -1,5 +1,5 @@
 function buildGaugeChart(id) {
-  d3.json("../samples.json").then((sample) => {
+  d3.json("samples.json").then((sample) => {
     var sel_metaData = sample.metadata;
     var result = sel_metaData.filter((smdata) => smdata.id.toString() === id)[0];
     var data = [
@@ -8,7 +8,7 @@ function buildGaugeChart(id) {
           mode: "gauge+number+delta",
           value: Math.max(parseInt(result.wfreq)),
           title: { text: "Belly Button Washing Frequency <br> Scrubs per Week", font: { size: 24 } },
-          delta: { reference: 10, increasing: { color: "RebeccaPurple" } },
+          // delta: { reference: 10, increasing: { color: "RebeccaPurple" } },
           gauge: {
             axis: { range: [null, 10], tickwidth: 10, tickcolor: "darkblue" },
             bar: { color: "darkblue" },
@@ -50,7 +50,7 @@ function buildGaugeChart(id) {
 function init() {
   var dropdown = d3.select("#selDataset");
   
-  d3.json("../samples.json").then((selectedData) => {
+  d3.json("samples.json").then((selectedData) => {
       selectedData.names.forEach(function(name) {
           dropdown.append("option").text(name).property("value");
       });
